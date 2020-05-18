@@ -16,4 +16,13 @@ public class MovementTile : MonoBehaviour
             GameObject.FindObjectOfType<CombatManager>().MoveActiveCharacter(tilePosition);
         }
     }
+
+    void OnMouseEnter() {
+        GetComponent<Renderer>().material.color = new Color(255, 255, 255);
+    }
+
+    void OnMouseExit() {
+        //<Renderer>().material.color = new Color(97, 209, 84);
+        GetComponent<Renderer>().material.color = new Color(0, 255, 0);
+    }
 }

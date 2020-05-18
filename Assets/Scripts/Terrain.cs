@@ -7,7 +7,8 @@ public class Terrain : MonoBehaviour
 {
     public Material terrainMaterial;
 
-    public GameObject higlightedMove;
+    public GameObject movementTile;
+    public GameObject attackTile;
     public GameObject terrainPrefab;
 
     public int terrainSize = 5;
@@ -31,11 +32,14 @@ public class Terrain : MonoBehaviour
         heightMap = NoiseGenerator.GenerateNoiseMap(terrainSize, scale, amplitude, frequency, octave);
         terrain = new GameObject[terrainSize, terrainSize];
 
+        GameObject cells = new GameObject("Cells");
+        cells.transform.parent = transform;
+
         for (int y = 0; y < terrainSize; y++) {
             for (int x = 0; x < terrainSize; x++) {
                 GameObject cell = GameObject.Instantiate(terrainPrefab);
                 cell.transform.position = new Vector3(x - terrainSize / 2, heightMap[x, y], y - terrainSize / 2);
-                cell.transform.parent = transform;
+                cell.transform.parent = cells.transform;
                 cell.GetComponent<MeshRenderer>().sharedMaterial = terrainMaterial;
                 cell.GetComponent<TerrainCubeUVsMapper>().InitializeUVs();
                 terrain[x, y] = cell;
@@ -43,29 +47,62 @@ public class Terrain : MonoBehaviour
         }
     }
 
-    public void HighlightCharacterMovement(CharacterInfo info) {
-        DeleteHighlightedCharacterMovement();
+    public void CreateMovementTiles(CharacterInfo info, Character[] characters) {
+        DeleteActionTiles();
         
-        GameObject movementTiles = new GameObject("MovementTiles");
+        GameObject movementTiles = new GameObject("ActionTiles");
         movementTiles.transform.parent = transform;
+
         for (int y = info.position.y - info.moveRange; y < info.position.y + info.moveRange + 1; y++) {
             for (int x = info.position.x - info.moveRange; x < info.position.x + info.moveRange + 1; x++) {
                 float lenght = Mathf.Abs(x - info.position.x) + Mathf.Abs(y - info.position.y);
                 if (lenght <= info.moveRange) {
                     if (x < terrainSize && x >= 0 && y < terrainSize && y >= 0) {
-                        if (x != info.position.x || y != info.position.y) {
-                            GameObject tmp = GameObject.Instantiate(higlightedMove, movementTiles.transform);
+
+                        bool freeTile = true;
+                        for (int i = 0; i < characters.Length; i++) {
+                            if (characters[i].infos.position.x == x && characters[i].infos.position.y == y) {
+                                freeTile = false;
+                            }
+                        }
+
+                        if (freeTile) {
+                            GameObject tmp = GameObject.Instantiate(movementTile, movementTiles.transform);
                             tmp.GetComponent<MovementTile>().InitializeTile(new Position(x, y));
                             tmp.transform.position = new Vector3(x - terrainSize / 2, heightMap[x, y] + 1.01f, y - terrainSize / 2);
                         }
+
                     }
                 }
             }
         }
     }
 
-    public void DeleteHighlightedCharacterMovement() {
-        GameObject highlightedMoves = GameObject.Find("MovementTiles");
+    public void CreateAttackTiles(CharacterInfo info) {
+        DeleteActionTiles();
+        
+        GameObject attackTiles = new GameObject("ActionTiles");
+        attackTiles.transform.parent = transform;
+        for (int y = info.position.y - info.attackRange; y < info.position.y + info.attackRange + 1; y++) {
+            for (int x = info.position.x - info.attackRange; x < info.position.x + info.attackRange + 1; x++) {
+                float lenght = Mathf.Abs(x - info.position.x) + Mathf.Abs(y - info.position.y);
+                if (lenght <= info.attackRange) {
+                    if (x < terrainSize && x >= 0 && y < terrainSize && y >= 0) {
+
+                        if (x != info.position.x || y != info.position.y) {
+                            GameObject tmp = GameObject.Instantiate(attackTile, attackTiles.transform);
+                            tmp.GetComponent<ActionTile>().InitializeTile(new Position(x, y), info);
+                            tmp.transform.position = new Vector3(x - terrainSize / 2, heightMap[x, y] + 1.01f, y - terrainSize / 2);
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+
+    public void DeleteActionTiles() {
+        GameObject highlightedMoves = GameObject.Find("ActionTiles");
         if (Application.isEditor) {
             GameObject.DestroyImmediate(highlightedMoves);
         } else {

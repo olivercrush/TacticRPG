@@ -10,6 +10,7 @@ public class CombatManager : MonoBehaviour
 
     private Terrain terrain;
     private Character[] characters;
+    private int activeCharacter;
 
     void Start()
     {
@@ -26,12 +27,8 @@ public class CombatManager : MonoBehaviour
     }
 
     public void MoveActiveCharacter(Position pos) {
-        for (int i = 0; i < characters.Length; i++) {
-            if (characters[i].infos.active) {
-                characters[i].infos.position = pos;
-                terrain.MoveCharacter(characters[i]);
-            }
-        }
+        characters[activeCharacter].infos.position = pos;
+        terrain.MoveCharacter(characters[activeCharacter]);
         
         UpdateCombat();
     }
@@ -44,16 +41,57 @@ public class CombatManager : MonoBehaviour
             characters[i].InitializeCharacter(charactersInfos[i]);
             terrain.PlaceCharacter(characters[i]);
         }
+
+        for (int i = 0; i < characters.Length; i++) {
+            for (int j = i + 1; j < characters.Length; j++) {
+                if (characters[j].infos.initiative > characters[i].infos.initiative) {
+                    Character tmp = characters[i];
+                    characters[i] = characters[j];
+                    characters[j] = tmp;
+                }
+            }
+        }
+
+        activeCharacter = -1;
     }
 
     public void UpdateCombat() {
+        
+        activeCharacter++;
+        if (activeCharacter >= characters.Length) {
+            activeCharacter = 0;
+        }
+
+        //print("New turn : " + activeCharacter);
+
+        characters[activeCharacter].CenterCamera();
+        //terrain.CreateMovementTiles(characters[activeCharacter].infos, characters);
+        terrain.CreateAttackTiles(characters[activeCharacter].infos);
+
+        if (VerifyEndOfCombat()) {
+            print("End of battle");
+        }
+    }
+
+    public bool VerifyEndOfCombat() {
+
+        int blueCount = 0;
+        int redCount = 0;
+
         for (int i = 0; i < characters.Length; i++) {
-            Character character = characters[i].GetComponent<Character>();
-            if (character.infos.active) {
-                character.CenterCamera();
-                terrain.HighlightCharacterMovement(character.infos);
+            if (characters[i].infos.team == Team.RED) {
+                redCount++;
+            }
+            else {
+                blueCount++;
             }
         }
+
+        if (blueCount == 0 || redCount == 0) {
+            return true;
+        }
+
+        return false;
     }
 
     private void DeleteAllCharacters() {

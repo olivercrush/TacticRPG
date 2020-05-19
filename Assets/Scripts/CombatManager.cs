@@ -11,10 +11,20 @@ public class CombatManager : MonoBehaviour
     private Terrain terrain;
     private Character[] characters;
     private int activeCharacter;
+    private TurnStatus turnStatus;
 
     void Start()
     {
         Initialize();
+    }
+
+    void Update() {
+        if (Input.GetKeyDown(KeyCode.M)) {
+            StartAction(ActionType.MOVE);
+        }
+        else if (Input.GetKeyDown(KeyCode.A)) {
+            StartAction(ActionType.ATTACK);
+        }
     }
 
     public void Initialize()
@@ -26,10 +36,24 @@ public class CombatManager : MonoBehaviour
         UpdateCombat();
     }
 
+    public void StartAction(ActionType actionType) {
+        if (actionType == ActionType.MOVE && !turnStatus.move)
+            terrain.CreateMovementTiles(characters[activeCharacter].infos, characters);
+        else if (actionType == ActionType.ATTACK && !turnStatus.attack)
+            terrain.CreateAttackTiles(characters[activeCharacter].infos);
+    }
+
     public void MoveActiveCharacter(Position pos) {
         characters[activeCharacter].infos.position = pos;
         terrain.MoveCharacter(characters[activeCharacter]);
-        
+        turnStatus.move = true;
+        UpdateCombat();
+    }
+
+    public void AttackCharacter(CharacterInfo info, Position position) {
+        Character attackedCharacter = characters.GetCharacterByPosition(position);
+        attackedCharacter.ReceiveAttack(info.attackPoints);
+        turnStatus.attack = true;
         UpdateCombat();
     }
 
@@ -42,31 +66,22 @@ public class CombatManager : MonoBehaviour
             terrain.PlaceCharacter(characters[i]);
         }
 
-        for (int i = 0; i < characters.Length; i++) {
-            for (int j = i + 1; j < characters.Length; j++) {
-                if (characters[j].infos.initiative > characters[i].infos.initiative) {
-                    Character tmp = characters[i];
-                    characters[i] = characters[j];
-                    characters[j] = tmp;
-                }
-            }
-        }
-
-        activeCharacter = -1;
+        characters = characters.SortByInitiative();
+        activeCharacter = 0;
     }
 
     public void UpdateCombat() {
-        
-        activeCharacter++;
-        if (activeCharacter >= characters.Length) {
-            activeCharacter = 0;
+        if (turnStatus.IsTurnOver()) {
+            activeCharacter++;
+            if (activeCharacter >= characters.Length) {
+                activeCharacter = 0;
+            }
+
+            turnStatus.ResetStatus();
         }
-
-        //print("New turn : " + activeCharacter);
-
+        
+        terrain.DeleteActionTiles();
         characters[activeCharacter].CenterCamera();
-        //terrain.CreateMovementTiles(characters[activeCharacter].infos, characters);
-        terrain.CreateAttackTiles(characters[activeCharacter].infos);
 
         if (VerifyEndOfCombat()) {
             print("End of battle");
@@ -106,4 +121,23 @@ public class CombatManager : MonoBehaviour
         }
         characters = null;
     }
+}
+
+public struct TurnStatus {
+    public bool move;
+    public bool attack;
+
+    public void ResetStatus() {
+        move = false;
+        attack = false;
+    }
+
+    public bool IsTurnOver() {
+        return (move && attack);
+    }
+}
+
+public enum ActionType {
+    MOVE,
+    ATTACK
 }

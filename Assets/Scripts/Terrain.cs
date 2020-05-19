@@ -91,7 +91,7 @@ public class Terrain : MonoBehaviour
 
                         if (x != info.position.x || y != info.position.y) {
                             GameObject tmp = GameObject.Instantiate(attackTile, attackTiles.transform);
-                            tmp.GetComponent<ActionTile>().InitializeTile(new Position(x, y), info);
+                            tmp.GetComponent<AttackTile>().InitializeTile(new Position(x, y), info);
                             tmp.transform.position = new Vector3(x - terrainSize / 2, heightMap[x, y] + 1.01f, y - terrainSize / 2);
                         }
 

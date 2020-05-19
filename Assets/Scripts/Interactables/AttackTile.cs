@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ActionTile : MonoBehaviour
+public class AttackTile : MonoBehaviour
 {
     Position tilePosition;
     CharacterInfo characterInfo;

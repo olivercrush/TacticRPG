@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class Character : MonoBehaviour
+public class Entity : MonoBehaviour
 {
-    public CharacterInfo infos;
+    public EntityInfo infos;
 
-    public void InitializeCharacter(CharacterInfo infos) {
+    public void InitializeEntity(EntityInfo infos) {
         this.infos = infos;
 
         if (infos.team == Team.BLUE) {
@@ -38,7 +38,7 @@ public class Character : MonoBehaviour
 }
 
 [System.Serializable]
-public struct CharacterInfo {
+public struct EntityInfo {
     public Position position;
 
     public int lifePoints;

@@ -4,16 +4,19 @@ using UnityEngine;
 
 public class MovementTile : MonoBehaviour
 {
+    Entity trigger;
     Position tilePosition;
 
-    public void InitializeTile(Position pos) {
+    public void InitializeTile(Entity trigger, Position pos) {
+        this.trigger = trigger;
         tilePosition = pos;
     }
 
     void OnMouseOver() {
         if (Input.GetMouseButtonDown(0)) {
             //print("X:" + tilePosition.x + " / Y:" + tilePosition.y);
-            GameObject.FindObjectOfType<CombatManager>().MoveActiveCharacter(tilePosition);
+            Target[] targets = { new Target(tilePosition) };
+            Action action = new Action(targets, trigger, ActionType.MOVE);
         }
     }
 

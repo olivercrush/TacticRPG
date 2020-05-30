@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class CombatManager : MonoBehaviour
 {
-    public GameObject characterPrefab;
+    public GameObject EntityPrefab;
     public bool autoUpdate;
-    public CharacterInfo[] charactersInfos;
+    public EntityInfo[] entitiesInfos;
 
     private Terrain terrain;
-    private Character[] characters;
-    private int activeCharacter;
+    private Entity[] entities;
+    private int activeEntity;
     private TurnStatus turnStatus;
 
     void Start()
@@ -32,60 +32,67 @@ public class CombatManager : MonoBehaviour
         terrain = GetComponentInChildren<Terrain>();
         terrain.GenerateTerrain();
 
-        GenerateCharacters();
+        GenerateEntities();
         UpdateCombat();
     }
 
     public void StartAction(ActionType actionType) {
         if (actionType == ActionType.MOVE && !turnStatus.move)
-            terrain.CreateMovementTiles(characters[activeCharacter].infos, characters);
+            terrain.CreateMovementTiles(entities[activeEntity], entities);
         else if (actionType == ActionType.ATTACK && !turnStatus.attack)
-            terrain.CreateAttackTiles(characters[activeCharacter].infos);
+            terrain.CreateAttackTiles(entities[activeEntity]);
     }
 
-    public void MoveActiveCharacter(Position pos) {
-        characters[activeCharacter].infos.position = pos;
-        terrain.MoveCharacter(characters[activeCharacter]);
+    public void MoveEntity(Entity entity, Position pos) {
+        entities.UpdatePosition(entity, pos);
+        terrain.MoveEntity(entity);
         turnStatus.move = true;
         UpdateCombat();
     }
 
-    public void AttackCharacter(CharacterInfo info, Position position) {
-        Character attackedCharacter = characters.GetCharacterByPosition(position);
-        attackedCharacter.ReceiveAttack(info.attackPoints);
+    public void AttackEntity(Entity entity, int lifepoints) {
+        entities.UpdateLifepoints(entity, lifepoints);
         turnStatus.attack = true;
         UpdateCombat();
     }
 
-    public void GenerateCharacters() {
-        DeleteAllCharacters();
-        characters = new Character[charactersInfos.Length];
-        for (int i = 0; i < characters.Length; i++) {
-            characters[i] = GameObject.Instantiate(characterPrefab, new Vector3(0, 0, 0), Quaternion.Euler(0, 0, 0), transform).GetComponent<Character>();
-            characters[i].InitializeCharacter(charactersInfos[i]);
-            terrain.PlaceCharacter(characters[i]);
+    public void CleanActions() {
+        terrain.DeleteActionTiles();
+    }
+
+    public void GenerateEntities() {
+        DeleteAllEntities();
+        entities = new Entity[entitiesInfos.Length];
+        for (int i = 0; i < entities.Length; i++) {
+            entities[i] = GameObject.Instantiate(EntityPrefab, new Vector3(0, 0, 0), Quaternion.Euler(0, 0, 0), transform).GetComponent<Entity>();
+            entities[i].InitializeEntity(entitiesInfos[i]);
+            terrain.PlaceEntity(entities[i]);
         }
 
-        characters = characters.SortByInitiative();
-        activeCharacter = 0;
+        entities = entities.SortByInitiative();
+        activeEntity = 0;
     }
 
     public void UpdateCombat() {
         if (turnStatus.IsTurnOver()) {
-            activeCharacter++;
-            if (activeCharacter >= characters.Length) {
-                activeCharacter = 0;
+            activeEntity++;
+            if (activeEntity >= entities.Length) {
+                activeEntity = 0;
             }
 
             turnStatus.ResetStatus();
         }
         
         terrain.DeleteActionTiles();
-        characters[activeCharacter].CenterCamera();
+        entities[activeEntity].CenterCamera();
 
         if (VerifyEndOfCombat()) {
             print("End of battle");
         }
+    }
+
+    public Entity GetEntityAtPosition(Position pos) {
+        return entities.GetEntityByPosition(pos);
     }
 
     public bool VerifyEndOfCombat() {
@@ -93,8 +100,8 @@ public class CombatManager : MonoBehaviour
         int blueCount = 0;
         int redCount = 0;
 
-        for (int i = 0; i < characters.Length; i++) {
-            if (characters[i].infos.team == Team.RED) {
+        for (int i = 0; i < entities.Length; i++) {
+            if (entities[i].infos.team == Team.RED) {
                 redCount++;
             }
             else {
@@ -109,17 +116,17 @@ public class CombatManager : MonoBehaviour
         return false;
     }
 
-    private void DeleteAllCharacters() {
-        if (characters != null) {
-            for (int i = 0; i < characters.Length; i++) {
+    private void DeleteAllEntities() {
+        if (entities != null) {
+            for (int i = 0; i < entities.Length; i++) {
                 if (Application.isEditor) {
-                    GameObject.DestroyImmediate(characters[i].gameObject);
+                    GameObject.DestroyImmediate(entities[i].gameObject);
                 } else {
-                    GameObject.Destroy(characters[i].gameObject);
+                    GameObject.Destroy(entities[i].gameObject);
                 }
             }
         }
-        characters = null;
+        entities = null;
     }
 }
 
@@ -135,9 +142,4 @@ public struct TurnStatus {
     public bool IsTurnOver() {
         return (move && attack);
     }
-}
-
-public enum ActionType {
-    MOVE,
-    ATTACK
 }

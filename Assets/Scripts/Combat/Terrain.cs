@@ -47,28 +47,28 @@ public class Terrain : MonoBehaviour
         }
     }
 
-    public void CreateMovementTiles(CharacterInfo info, Character[] characters) {
+    public void CreateMovementTiles(Entity entity, Entity[] Entitys) {
         DeleteActionTiles();
         
         GameObject movementTiles = new GameObject("ActionTiles");
         movementTiles.transform.parent = transform;
 
-        for (int y = info.position.y - info.moveRange; y < info.position.y + info.moveRange + 1; y++) {
-            for (int x = info.position.x - info.moveRange; x < info.position.x + info.moveRange + 1; x++) {
-                float lenght = Mathf.Abs(x - info.position.x) + Mathf.Abs(y - info.position.y);
-                if (lenght <= info.moveRange) {
+        for (int y = entity.infos.position.y - entity.infos.moveRange; y < entity.infos.position.y + entity.infos.moveRange + 1; y++) {
+            for (int x = entity.infos.position.x - entity.infos.moveRange; x < entity.infos.position.x + entity.infos.moveRange + 1; x++) {
+                float lenght = Mathf.Abs(x - entity.infos.position.x) + Mathf.Abs(y - entity.infos.position.y);
+                if (lenght <= entity.infos.moveRange) {
                     if (x < terrainSize && x >= 0 && y < terrainSize && y >= 0) {
 
                         bool freeTile = true;
-                        for (int i = 0; i < characters.Length; i++) {
-                            if (characters[i].infos.position.x == x && characters[i].infos.position.y == y) {
+                        for (int i = 0; i < Entitys.Length; i++) {
+                            if (Entitys[i].infos.position.x == x && Entitys[i].infos.position.y == y) {
                                 freeTile = false;
                             }
                         }
 
                         if (freeTile) {
                             GameObject tmp = GameObject.Instantiate(movementTile, movementTiles.transform);
-                            tmp.GetComponent<MovementTile>().InitializeTile(new Position(x, y));
+                            tmp.GetComponent<MovementTile>().InitializeTile(entity, new Position(x, y));
                             tmp.transform.position = new Vector3(x - terrainSize / 2, heightMap[x, y] + 1.01f, y - terrainSize / 2);
                         }
 
@@ -78,20 +78,20 @@ public class Terrain : MonoBehaviour
         }
     }
 
-    public void CreateAttackTiles(CharacterInfo info) {
+    public void CreateAttackTiles(Entity entity) {
         DeleteActionTiles();
         
         GameObject attackTiles = new GameObject("ActionTiles");
         attackTiles.transform.parent = transform;
-        for (int y = info.position.y - info.attackRange; y < info.position.y + info.attackRange + 1; y++) {
-            for (int x = info.position.x - info.attackRange; x < info.position.x + info.attackRange + 1; x++) {
-                float lenght = Mathf.Abs(x - info.position.x) + Mathf.Abs(y - info.position.y);
-                if (lenght <= info.attackRange) {
+        for (int y = entity.infos.position.y - entity.infos.attackRange; y < entity.infos.position.y + entity.infos.attackRange + 1; y++) {
+            for (int x = entity.infos.position.x - entity.infos.attackRange; x < entity.infos.position.x + entity.infos.attackRange + 1; x++) {
+                float lenght = Mathf.Abs(x - entity.infos.position.x) + Mathf.Abs(y - entity.infos.position.y);
+                if (lenght <= entity.infos.attackRange) {
                     if (x < terrainSize && x >= 0 && y < terrainSize && y >= 0) {
 
-                        if (x != info.position.x || y != info.position.y) {
+                        if (x != entity.infos.position.x || y != entity.infos.position.y) {
                             GameObject tmp = GameObject.Instantiate(attackTile, attackTiles.transform);
-                            tmp.GetComponent<AttackTile>().InitializeTile(new Position(x, y), info);
+                            tmp.GetComponent<AttackTile>().InitializeTile(entity, new Position(x, y));
                             tmp.transform.position = new Vector3(x - terrainSize / 2, heightMap[x, y] + 1.01f, y - terrainSize / 2);
                         }
 
@@ -110,15 +110,15 @@ public class Terrain : MonoBehaviour
         }
     }
 
-    public void PlaceCharacter(Character character) {
-        Position characterPos = character.infos.position;
-        character.transform.position = new Vector3(characterPos.x - terrainSize / 2, heightMap[characterPos.x, characterPos.y] + 1.5f, characterPos.y - terrainSize / 2);
-        character.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+    public void PlaceEntity(Entity entity) {
+        Position pos = entity.infos.position;
+        entity.transform.position = new Vector3(pos.x - terrainSize / 2, heightMap[pos.x, pos.y] + 1.5f, pos.y - terrainSize / 2);
+        entity.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
     }
 
-    public void MoveCharacter(Character character) {
-        Position characterPos = character.infos.position;
-        character.transform.position = new Vector3(characterPos.x - terrainSize / 2, heightMap[characterPos.x, characterPos.y] + 1.5f, characterPos.y - terrainSize / 2);
+    public void MoveEntity(Entity entity) {
+        Position pos = entity.infos.position;
+        entity.transform.position = new Vector3(pos.x - terrainSize / 2, heightMap[pos.x, pos.y] + 1.5f, pos.y - terrainSize / 2);
     }
 
     private void DestroyAllChidren() {

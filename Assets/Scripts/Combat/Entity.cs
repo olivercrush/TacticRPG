@@ -18,14 +18,15 @@ public class Entity : MonoBehaviour
         }
     }
 
-    public bool ReceiveAttack(int attack) {
-        infos.lifePoints -= attack;
+    public void Move(Position position) {
+        infos.position = position;
+        FindObjectOfType<CombatManager>().UpdateEntities(this);
+    }
 
-        if (infos.lifePoints <= 0) {
-            return true;
-        }
-
-        return false;
+    public void Attack(Entity entity) {
+        entity.infos.lifePoints -= infos.attackPoints;
+        Entity[] updatedEntities = { this, entity };
+        FindObjectOfType<CombatManager>().UpdateEntities(updatedEntities);
     }
 
     public Position GetPosition() {
@@ -39,6 +40,8 @@ public class Entity : MonoBehaviour
 
 [System.Serializable]
 public struct EntityInfo {
+    public int id;
+
     public Position position;
 
     public int lifePoints;

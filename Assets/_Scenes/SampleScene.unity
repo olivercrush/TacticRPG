@@ -586,7 +586,8 @@ MonoBehaviour:
     type: 3}
   autoUpdate: 0
   entitiesInfos:
-  - position:
+  - id: 0
+    position:
       x: 6
       y: 3
     lifePoints: 10
@@ -595,7 +596,8 @@ MonoBehaviour:
     initiative: 2
     moveRange: 3
     team: 0
-  - position:
+  - id: 1
+    position:
       x: 3
       y: 7
     lifePoints: 10
@@ -604,7 +606,8 @@ MonoBehaviour:
     initiative: 5
     moveRange: 4
     team: 1
-  - position:
+  - id: 2
+    position:
       x: 5
       y: 5
     lifePoints: 10

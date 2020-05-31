@@ -26,18 +26,12 @@ public static class EntityArrayExtension {
         return null;
     }
 
-    public static void UpdatePosition(this Entity[] array, Entity entity, Position pos) {
+    public static void UpdateEntities(this Entity[] array, Entity[] updatedEntities) {
         for (int i = 0; i < array.Length; i++) {
-            if (array[i] == entity) {
-                array[i].infos.position = pos;
-            }
-        }
-    }
-
-    public static void UpdateLifepoints(this Entity[] array, Entity entity, int lifepoints) {
-        for (int i = 0; i < array.Length; i++) {
-            if (array[i] == entity) {
-                array[i].infos.lifePoints = lifepoints;
+            for (int j = 0; j < updatedEntities.Length; j++) {
+                if (array[i].infos.id == updatedEntities[j].infos.id) {
+                    array[i] = updatedEntities[j];
+                }
             }
         }
     }

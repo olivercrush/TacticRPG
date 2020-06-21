@@ -14,10 +14,10 @@ public class Target {
     }
 
     public bool IsEntity() {
-        return (GameObject.FindObjectOfType<CombatManager>().GetEntityAtPosition(position) != null);
+        return (GameObject.FindObjectOfType<EntitiesManager>().GetEntityAtPosition(position) != null);
     }
 
     public Entity GetEntity() {
-        return GameObject.FindObjectOfType<CombatManager>().GetEntityAtPosition(position);
+        return GameObject.FindObjectOfType<EntitiesManager>().GetEntityAtPosition(position);
     }
 }

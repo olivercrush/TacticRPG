@@ -17,7 +17,7 @@ public class AttackTile : MonoBehaviour
             //print("X:" + tilePosition.x + " / Y:" + tilePosition.y);
 
             Target[] targets = { new Target(position) };
-            Action action = new Action(targets, trigger, ActionType.ATTACK);
+            Action action = new AttackAction(targets, trigger);
         }
     }
 

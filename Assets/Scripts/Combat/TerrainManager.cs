@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class Terrain : MonoBehaviour
+public class TerrainManager : MonoBehaviour
 {
     public Material terrainMaterial;
 

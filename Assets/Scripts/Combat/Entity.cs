@@ -18,19 +18,13 @@ public class Entity : MonoBehaviour
         }
     }
 
-    public void Move(Position position) {
-        infos.position = position;
-        FindObjectOfType<CombatManager>().UpdateEntities(this);
-    }
-
-    public void Attack(Entity entity) {
-        entity.infos.lifePoints -= infos.attackPoints;
-        Entity[] updatedEntities = { this, entity };
-        FindObjectOfType<CombatManager>().UpdateEntities(updatedEntities);
-    }
-
     public Position GetPosition() {
         return infos.position;
+    }
+
+    public void Die() {
+        // play animation
+        Debug.Log("DIE");
     }
 
     public void CenterCamera() {

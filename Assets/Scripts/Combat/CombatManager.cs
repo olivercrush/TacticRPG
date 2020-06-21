@@ -8,9 +8,8 @@ public class CombatManager : MonoBehaviour
     public bool autoUpdate;
     public EntityInfo[] entitiesInfos;
 
-    private Terrain terrain;
-    private Entity[] entities;
-    private int activeEntity;
+    private TerrainManager terrainManager;
+    private EntitiesManager entitiesManager;
 
     private List<Turn> turns;
 
@@ -30,95 +29,43 @@ public class CombatManager : MonoBehaviour
 
     public void Initialize()
     {
-        terrain = GetComponentInChildren<Terrain>();
-        terrain.GenerateTerrain();
+        terrainManager = GetComponentInChildren<TerrainManager>();
+        terrainManager.GenerateTerrain();
 
-        GenerateEntities();
+        entitiesManager = GetComponentInChildren<EntitiesManager>();
+        entitiesManager.InitializeEntities(entitiesInfos);
+
         turns = new List<Turn>();
-        turns.Add(new Turn(entities[activeEntity]));
+        turns.Add(new Turn(entitiesManager.GetActiveEntity()));
     }
 
     public void StartAction(ActionType actionType) {
         if (actionType == ActionType.MOVE && turns[turns.Count - 1].status.moveCount < 1)
-            terrain.CreateMovementTiles(entities[activeEntity], entities);
+            terrainManager.CreateMovementTiles(entitiesManager.GetActiveEntity(), entitiesManager.GetAllEntities());
         else if (actionType == ActionType.ATTACK && turns[turns.Count - 1].status.attackCount < 1)
-            terrain.CreateAttackTiles(entities[activeEntity]);
-    }
-
-    public void EndTurn() {
-        activeEntity++;
-        if (activeEntity >= entities.Length) {
-            activeEntity = 0;
-        }
-
-        if (VerifyEndOfCombat()) {
-            print("End of battle");
-        }
-        else {
-            turns.Add(new Turn(entities[activeEntity]));
-        }
-    }
-
-    public bool VerifyEndOfCombat() {
-        int blueCount = 0;
-        int redCount = 0;
-
-        for (int i = 0; i < entities.Length; i++) {
-            if (entities[i].infos.team == Team.RED) {
-                redCount++;
-            }
-            else {
-                blueCount++;
-            }
-        }
-
-        if (blueCount == 0 || redCount == 0) {
-            return true;
-        }
-
-        return false;
+            terrainManager.CreateAttackTiles(entitiesManager.GetActiveEntity());
     }
 
     public Turn GetActiveTurn() {
         return turns[turns.Count - 1];
     }
 
-    public void UpdateEntities(Entity[] updatedEntities) {
-        entities.UpdateEntities(updatedEntities);
-    }
+    public void EndTurn() {
+        entitiesManager.IncrementActiveEntity();
 
-    public void UpdateEntities(Entity updatedEntity) {
-        Entity[] updatedEntities = { updatedEntity };
-        entities.UpdateEntities(updatedEntities);
-    }
-
-    public void GenerateEntities() {
-        DeleteAllEntities();
-        entities = new Entity[entitiesInfos.Length];
-        for (int i = 0; i < entities.Length; i++) {
-            entities[i] = GameObject.Instantiate(EntityPrefab, new Vector3(0, 0, 0), Quaternion.Euler(0, 0, 0), transform).GetComponent<Entity>();
-            entities[i].InitializeEntity(entitiesInfos[i]);
-            terrain.PlaceEntity(entities[i]);
+        if (VerifyEndOfCombat()) {
+            print("End of battle");
         }
-
-        entities = entities.SortByInitiative();
-        activeEntity = 0;
-    }
-
-    public Entity GetEntityAtPosition(Position pos) {
-        return entities.GetEntityByPosition(pos);
-    }
-
-    private void DeleteAllEntities() {
-        if (entities != null) {
-            for (int i = 0; i < entities.Length; i++) {
-                if (Application.isEditor) {
-                    GameObject.DestroyImmediate(entities[i].gameObject);
-                } else {
-                    GameObject.Destroy(entities[i].gameObject);
-                }
-            }
+        else {
+            turns.Add(new Turn(entitiesManager.GetActiveEntity()));
         }
-        entities = null;
+    }
+
+    public bool VerifyEndOfCombat() {
+        EntityCount entityCount = entitiesManager.GetEntityCount();
+        if (entityCount.blue == 0 || entityCount.red == 0) {
+            return true;
+        }
+        return false;
     }
 }

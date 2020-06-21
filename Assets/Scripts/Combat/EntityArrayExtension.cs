@@ -35,4 +35,27 @@ public static class EntityArrayExtension {
             }
         }
     }
+
+    public static EntityCount GetEntityCount(this Entity[] array) {
+        int total = 0, red = 0, blue = 0;
+        for (int i = 0; i < array.Length; i++) {
+            total++;
+            if (array[i].infos.team == Team.RED) red++;
+            else if (array[i].infos.team == Team.BLUE) blue++;
+        }
+
+        return new EntityCount(total, red, blue);
+    }
+}
+
+public struct EntityCount {
+    public int total;
+    public int red;
+    public int blue;
+
+    public EntityCount(int total, int red, int blue) {
+        this.total = total;
+        this.red = red;
+        this.blue = blue;
+    }
 }

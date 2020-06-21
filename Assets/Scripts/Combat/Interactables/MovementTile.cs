@@ -15,8 +15,8 @@ public class MovementTile : MonoBehaviour
     void OnMouseOver() {
         if (Input.GetMouseButtonDown(0)) {
             //print("X:" + tilePosition.x + " / Y:" + tilePosition.y);
-            Target[] targets = { new Target(tilePosition) };
-            Action action = new Action(targets, trigger, ActionType.MOVE);
+            Target target = new Target(tilePosition);
+            Action action = new MoveAction(target, trigger);
         }
     }
 

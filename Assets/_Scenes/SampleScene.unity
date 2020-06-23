@@ -355,15 +355,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c311805639251b342813246dca7cb9bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  terrainMaterial: {fileID: 2100000, guid: 518acdb4ac416624b92c1ff81ae16615, type: 2}
+  topMaterial: {fileID: 2100000, guid: 11eaab4270cc6b448a9d2c6175b1c842, type: 2}
+  sideMaterial: {fileID: 2100000, guid: e92de31ffb83bef45b6dea02f4cc99a4, type: 2}
   movementTile: {fileID: 9121192308504655602, guid: 9aab1eb46a944ba4dba8e75706d6ba61,
     type: 3}
   attackTile: {fileID: 9121192308504655602, guid: 1ceca326825223c47b34673ab3f249d0,
     type: 3}
-  terrainPrefab: {fileID: 5668050089347133313, guid: 5351b1c0adafea045b2bed5101190183,
+  terrainPrefab: {fileID: 3226815246488184054, guid: 90b13bf0b1c9b23488667b16469d6864,
     type: 3}
   terrainSize: 10
-  scale: 1
+  scale: 1.05
   amplitude: 1
   frequency: 1
   octave: 1

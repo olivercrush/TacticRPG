@@ -5,7 +5,8 @@ using System.Linq;
 
 public class TerrainManager : MonoBehaviour
 {
-    public Material terrainMaterial;
+    public Material topMaterial;
+    public Material sideMaterial;
 
     public GameObject movementTile;
     public GameObject attackTile;
@@ -40,8 +41,9 @@ public class TerrainManager : MonoBehaviour
                 GameObject cell = GameObject.Instantiate(terrainPrefab);
                 cell.transform.position = new Vector3(x - terrainSize / 2, heightMap[x, y], y - terrainSize / 2);
                 cell.transform.parent = cells.transform;
-                cell.GetComponent<MeshRenderer>().sharedMaterial = terrainMaterial;
-                cell.GetComponent<TerrainCubeUVsMapper>().InitializeUVs();
+                cell.GetComponent<TerrainCell>().Initialize(topMaterial, sideMaterial);
+                //cell.GetComponent<MeshRenderer>().sharedMaterial = terrainMaterial;
+                //cell.GetComponent<TerrainCubeUVsMapper>().InitializeUVs();
                 terrain[x, y] = cell;
             }
         }

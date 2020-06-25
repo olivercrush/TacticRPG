@@ -12,44 +12,21 @@ public class TerrainManager : MonoBehaviour
     public GameObject attackTile;
     public GameObject terrainPrefab;
 
-    public int terrainSize = 5;
-    public float scale = 1;
-    public float amplitude = 1;
-    public int frequency = 1;
-    public int octave = 1;
-
+    public TerrainCharacteristics terrainCharacteristics;
     public bool autoUpdate;
 
-    private float[,] heightMap;
-    private GameObject[,] terrain;
+    private Terrain terrain;
 
     void Start()
     {
-        GenerateTerrain();
+        terrain = new Terrain(this.gameObject, terrainCharacteristics);
     }
 
     public void GenerateTerrain() {
-        DestroyAllChidren();
-        heightMap = NoiseGenerator.GenerateNoiseMap(terrainSize, scale, amplitude, frequency, octave);
-        terrain = new GameObject[terrainSize, terrainSize];
-
-        GameObject cells = new GameObject("Cells");
-        cells.transform.parent = transform;
-
-        for (int y = 0; y < terrainSize; y++) {
-            for (int x = 0; x < terrainSize; x++) {
-                GameObject cell = GameObject.Instantiate(terrainPrefab);
-                cell.transform.position = new Vector3(x - terrainSize / 2, heightMap[x, y], y - terrainSize / 2);
-                cell.transform.parent = cells.transform;
-                cell.GetComponent<TerrainCell>().Initialize(topMaterial, sideMaterial);
-                //cell.GetComponent<MeshRenderer>().sharedMaterial = terrainMaterial;
-                //cell.GetComponent<TerrainCubeUVsMapper>().InitializeUVs();
-                terrain[x, y] = cell;
-            }
-        }
+        terrain.GenerateTerrain(terrainPrefab, topMaterial, sideMaterial);
     }
 
-    public void CreateMovementTiles(Entity entity, Entity[] Entitys) {
+    public void CreateMovementTiles(Entity entity, Entity[] entities) {
         DeleteActionTiles();
         
         GameObject movementTiles = new GameObject("ActionTiles");
@@ -59,11 +36,11 @@ public class TerrainManager : MonoBehaviour
             for (int x = entity.infos.position.x - entity.infos.moveRange; x < entity.infos.position.x + entity.infos.moveRange + 1; x++) {
                 float lenght = Mathf.Abs(x - entity.infos.position.x) + Mathf.Abs(y - entity.infos.position.y);
                 if (lenght <= entity.infos.moveRange) {
-                    if (x < terrainSize && x >= 0 && y < terrainSize && y >= 0) {
+                    if (x < terrainCharacteristics.size && x >= 0 && y < terrainCharacteristics.size && y >= 0) {
 
                         bool freeTile = true;
-                        for (int i = 0; i < Entitys.Length; i++) {
-                            if (Entitys[i].infos.position.x == x && Entitys[i].infos.position.y == y) {
+                        for (int i = 0; i < entities.Length; i++) {
+                            if (entities[i].infos.position.x == x && entities[i].infos.position.y == y) {
                                 freeTile = false;
                             }
                         }
@@ -71,7 +48,7 @@ public class TerrainManager : MonoBehaviour
                         if (freeTile) {
                             GameObject tmp = GameObject.Instantiate(movementTile, movementTiles.transform);
                             tmp.GetComponent<MovementTile>().InitializeTile(entity, new Position(x, y));
-                            tmp.transform.position = new Vector3(x - terrainSize / 2, heightMap[x, y] + 1.01f, y - terrainSize / 2);
+                            tmp.transform.position = new Vector3(x - terrainCharacteristics.size / 2, terrain.GetHeightMapValue(x, y) + 1.01f, y - terrainCharacteristics.size / 2);
                         }
 
                     }
@@ -89,12 +66,12 @@ public class TerrainManager : MonoBehaviour
             for (int x = entity.infos.position.x - entity.infos.attackRange; x < entity.infos.position.x + entity.infos.attackRange + 1; x++) {
                 float lenght = Mathf.Abs(x - entity.infos.position.x) + Mathf.Abs(y - entity.infos.position.y);
                 if (lenght <= entity.infos.attackRange) {
-                    if (x < terrainSize && x >= 0 && y < terrainSize && y >= 0) {
+                    if (x < terrainCharacteristics.size && x >= 0 && y < terrainCharacteristics.size && y >= 0) {
 
                         if (x != entity.infos.position.x || y != entity.infos.position.y) {
                             GameObject tmp = GameObject.Instantiate(attackTile, attackTiles.transform);
                             tmp.GetComponent<AttackTile>().InitializeTile(entity, new Position(x, y));
-                            tmp.transform.position = new Vector3(x - terrainSize / 2, heightMap[x, y] + 1.01f, y - terrainSize / 2);
+                            tmp.transform.position = new Vector3(x - terrainCharacteristics.size / 2, terrain.GetHeightMapValue(x, y) + 1.01f, y - terrainCharacteristics.size / 2);
                         }
 
                     }
@@ -114,23 +91,14 @@ public class TerrainManager : MonoBehaviour
 
     public void PlaceEntity(Entity entity) {
         Position pos = entity.infos.position;
-        entity.transform.position = new Vector3(pos.x - terrainSize / 2, heightMap[pos.x, pos.y] + 1.5f, pos.y - terrainSize / 2);
+        entity.transform.position = new Vector3(pos.x - terrainCharacteristics.size / 2, terrain.GetHeightMapValue(pos.x, pos.y) + 1.5f, pos.y - terrainCharacteristics.size / 2);
         entity.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
     }
 
     public void MoveEntity(Entity entity) {
         Position pos = entity.infos.position;
-        entity.transform.position = new Vector3(pos.x - terrainSize / 2, heightMap[pos.x, pos.y] + 1.5f, pos.y - terrainSize / 2);
+        entity.transform.position = new Vector3(pos.x - terrainCharacteristics.size / 2, terrain.GetHeightMapValue(pos.x, pos.y) + 1.5f, pos.y - terrainCharacteristics.size / 2);
     }
 
-    private void DestroyAllChidren() {
-        var tmpList = transform.Cast<Transform>().ToList();
-        foreach (Transform child in tmpList) {
-            if (Application.isEditor) {
-                GameObject.DestroyImmediate(child.gameObject);
-            } else {
-                GameObject.Destroy(child.gameObject);
-            }
-        }
-    }
+    
 }

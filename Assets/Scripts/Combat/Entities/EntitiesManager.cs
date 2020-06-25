@@ -17,6 +17,8 @@ public class EntitiesManager : MonoBehaviour
     }
 
     public Entity GetActiveEntity() {
+        if (activeEntity >= entities.Length)
+            return entities[0];
         return entities[activeEntity];
     }
 

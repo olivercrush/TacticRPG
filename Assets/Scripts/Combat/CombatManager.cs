@@ -55,21 +55,35 @@ public class CombatManager : MonoBehaviour
             terrainManager.CreateAttackTiles(entitiesManager.GetActiveEntity());
     }
 
+    // TODO : Check if there is a way to pass this responsibility to another task without increasing coupling
+
+    /// <summary>
+    /// Get current turn
+    /// </summary>
+    /// <returns>The current turn</returns>
     public Turn GetActiveTurn() {
         return turns[turns.Count - 1];
     }
 
+    /// <summary>
+    /// End the current turn, end battle if conditions checked or creates a new turn
+    /// </summary>
     public void EndTurn() {
-        entitiesManager.IncrementActiveEntity();
-
         if (VerifyEndOfCombat()) {
             print("End of battle");
         }
         else {
+            entitiesManager.IncrementActiveEntity();
             turns.Add(new Turn(entitiesManager.GetActiveEntity()));
         }
     }
 
+    // TODO : Make the conditions a customizable module to allow conditions diversity
+
+    /// <summary>
+    /// Check if the end of combat's conditions are met
+    /// </summary>
+    /// <returns>True if conditions are met, false if they are not</returns>
     public bool VerifyEndOfCombat() {
         EntityCount entityCount = entitiesManager.GetEntityCount();
         if (entityCount.blue == 0 || entityCount.red == 0) {

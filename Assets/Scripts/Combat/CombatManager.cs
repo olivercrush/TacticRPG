@@ -27,6 +27,9 @@ public class CombatManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Creates and initializes the terrain, entities and turns managers
+    /// </summary>
     public void Initialize()
     {
         terrainManager = GetComponentInChildren<TerrainManager>();
@@ -39,6 +42,12 @@ public class CombatManager : MonoBehaviour
         turns.Add(new Turn(entitiesManager.GetActiveEntity()));
     }
 
+    // TODO : Refactor this method
+
+    /// <summary>
+    /// Listen in to the user interactions with the game and acts accordingly
+    /// </summary>
+    /// <param name="actionType">The ActionType that represents the action the user wants to do</param>
     public void StartAction(ActionType actionType) {
         if (actionType == ActionType.MOVE && turns[turns.Count - 1].status.moveCount < 1)
             terrainManager.CreateMovementTiles(entitiesManager.GetActiveEntity(), entitiesManager.GetAllEntities());

@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// CombatManager is the higher component in charge of the combat aspect of the game. It has the responsibility to hold the different other managers and to synchronise them.
+/// </summary>
 public class CombatManager : MonoBehaviour
 {
     public GameObject EntityPrefab;

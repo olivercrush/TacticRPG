@@ -23,9 +23,11 @@ public class EntitiesManager : MonoBehaviour
     }
 
     public void IncrementActiveEntity() {
-        if (++activeEntity >= entities.Length) {
-            activeEntity = 0;
-        }
+        do {
+            if (++activeEntity >= entities.Length) {
+                activeEntity = 0;
+            }
+        } while (entities[activeEntity] == null);
     }
 
     public void UpdateEntities(Entity[] updatedEntities) {
@@ -59,17 +61,23 @@ public class EntitiesManager : MonoBehaviour
     }
 
     public void DeleteEntity(Entity entity) {
-        int count = 0;
-        Entity[] updatedEntities = new Entity[entities.Length - 1];
         for (int i = 0; i < entities.Length; i++) {
-            if (entities[i].infos.id != entity.infos.id) {
-                updatedEntities[count] = entities[i];
-                count++;
+            if (entities[i].infos.id == entity.infos.id) {
+                entities[i] = null;
             }
         }
 
-        entities = updatedEntities;
+        // check if dead entity is active entity
+        bool turnIsOver = false;
+        if (entity.infos.id == entities[activeEntity].infos.id) {
+            turnIsOver = true;
+        }
+
         GameObject.Destroy(entity.gameObject);
+
+        if (turnIsOver) {
+            GameObject.FindObjectOfType<CombatManager>().EndTurn();
+        }
     }
 
     public void DeleteEntities() {

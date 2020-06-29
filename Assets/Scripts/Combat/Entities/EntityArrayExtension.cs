@@ -17,6 +17,15 @@ public static class EntityArrayExtension {
         return array;
     }
 
+    public static int GetEntityOrder(this Entity[] array, Entity entity) {
+        for (int i = 0; i < array.Length; i++) {
+            if (array[i].infos.id == entity.infos.id) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public static Entity GetEntityByPosition(this Entity[] array, Position pos) {
         for (int i = 0; i < array.Length; i++) {
             if (array[i].infos.position.x == pos.x && array[i].infos.position.y == pos.y) {

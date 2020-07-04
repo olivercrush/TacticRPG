@@ -11,10 +11,11 @@ public class Turn {
     public Turn(Entity activeEntity) {
         status = new TurnStatus();
         status.InitializeTurnStatus();
+        
         actions = new List<Action>();
         entity = activeEntity;
 
-        Debug.Log("New turn : " + entity.infos.id);
+        Debug.Log("New turn : " + entity.infos.name);
         entity.CenterCamera();
     }
 

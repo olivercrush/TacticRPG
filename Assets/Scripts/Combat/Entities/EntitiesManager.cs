@@ -5,7 +5,7 @@ using UnityEngine;
 public class EntitiesManager : MonoBehaviour
 {
     public GameObject EntityPrefab;
-    private Entity[] entities;
+    public Entity[] entities;
     private int activeEntity = 0;
 
     public Entity GetEntityAtPosition(Position pos) {
@@ -27,7 +27,7 @@ public class EntitiesManager : MonoBehaviour
             if (++activeEntity >= entities.Length) {
                 activeEntity = 0;
             }
-        } while (entities[activeEntity] == null);
+        } while (entities[activeEntity].infos.dead);
     }
 
     public void UpdateEntities(Entity[] updatedEntities) {
@@ -55,25 +55,21 @@ public class EntitiesManager : MonoBehaviour
         for (int i = 0; i < entities.Length; i++) {
             entities[i] = GameObject.Instantiate(EntityPrefab, new Vector3(0, 0, 0), Quaternion.Euler(0, 0, 0), transform).GetComponent<Entity>();
             entities[i].InitializeEntity(infos[i]);
+            entities[i].name = entities[i].infos.name;
             GameObject.FindObjectOfType<TerrainManager>().PlaceEntity(entities[i]);
         }
         entities = entities.SortByInitiative();
     }
 
     public void DeleteEntity(Entity entity) {
-        for (int i = 0; i < entities.Length; i++) {
-            if (entities[i].infos.id == entity.infos.id) {
-                entities[i] = null;
-            }
-        }
-
         // check if dead entity is active entity
         bool turnIsOver = false;
         if (entity.infos.id == entities[activeEntity].infos.id) {
             turnIsOver = true;
         }
 
-        GameObject.Destroy(entity.gameObject);
+        entity.infos.dead = true;
+        //GameObject.Destroy(entity.gameObject);
 
         if (turnIsOver) {
             GameObject.FindObjectOfType<CombatManager>().EndTurn();

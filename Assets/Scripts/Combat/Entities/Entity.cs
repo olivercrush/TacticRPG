@@ -24,7 +24,7 @@ public class Entity : MonoBehaviour
 
     public void Die() {
         // play animation
-        Debug.Log("DIE");
+        Debug.Log("DIE : " + infos.id);
     }
 
     public void CenterCamera() {
@@ -35,7 +35,9 @@ public class Entity : MonoBehaviour
 [System.Serializable]
 public struct EntityInfo {
     public int id;
+    public string name;
 
+    public bool dead;
     public Position position;
 
     public int lifePoints;

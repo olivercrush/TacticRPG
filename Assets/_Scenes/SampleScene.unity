@@ -412,6 +412,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EntityPrefab: {fileID: 2096669651873776740, guid: 89eb51e9ecf825e4d9464f954724c7a1,
     type: 3}
+  entities: []
 --- !u!1 &1415333086
 GameObject:
   m_ObjectHideFlags: 0
@@ -462,6 +463,7 @@ MonoBehaviour:
   autoUpdate: 0
   entitiesInfos:
   - id: 0
+    name: BERSERK
     position:
       x: 6
       y: 3
@@ -472,6 +474,7 @@ MonoBehaviour:
     moveRange: 3
     team: 0
   - id: 1
+    name: SORCERER
     position:
       x: 3
       y: 7
@@ -482,6 +485,7 @@ MonoBehaviour:
     moveRange: 4
     team: 1
   - id: 2
+    name: BOWMAN
     position:
       x: 5
       y: 5

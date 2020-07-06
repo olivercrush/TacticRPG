@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Turn is a data object that holds the active entity and the actions done during said turn.
+/// It also has the responsibility to determine if the turn is over based on the actions registered during the turn.
+/// </summary>
 public class Turn {
 
     public TurnStatus status;
@@ -19,6 +23,9 @@ public class Turn {
         entity.CenterCamera();
     }
 
+    /// <summary>
+    /// Register an action done during this turn and store it in a list, then checks if the turn is over.
+    /// </summary>
     public void RegisterAction(Action action) {
         if (action.GetActionType() == ActionType.ATTACK || action.GetActionType() == ActionType.GUARD || action.GetActionType() == ActionType.SKILL) {
             status.attackCount += 1;
@@ -34,8 +41,13 @@ public class Turn {
             GameObject.FindObjectOfType<CombatManager>().EndTurn();
         }
     }
+
+    // TODO : Implement strategy pattern to check the victory / defeat conditions
 }
 
+/// <summary>
+/// Data structure that represents the turn status
+/// </summary>
 public struct TurnStatus {
     public int attackCount;
     public int moveCount;

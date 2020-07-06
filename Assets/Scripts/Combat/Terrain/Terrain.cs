@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
+/// <summary>
+/// Terrain is a data object that creates and holds the map data
+/// Responsibility : Creation and stocking of the map
+/// </summary>
 public class Terrain {
 
     private GameObject manager;

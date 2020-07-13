@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
+/// <summary>
+/// TerrainManager is a platform for the game to interact with the terrain
+/// Responsibility : Entities placement, terrain interaction
+/// </summary>
 public class TerrainManager : MonoBehaviour
 {
     public Material topMaterial;
@@ -22,10 +26,20 @@ public class TerrainManager : MonoBehaviour
         terrain = new Terrain(this.gameObject, terrainCharacteristics);
     }
 
+    /// <summary>
+    /// Generate the terrain
+    /// </summary>
     public void GenerateTerrain() {
         terrain.GenerateTerrain(terrainPrefab, topMaterial, sideMaterial);
     }
 
+    // TODO : Use A* algorithm to find paths
+
+    /// <summary>
+    /// Create interaction tiles for the player to choose a cell to move to based on other entities and obstacles
+    /// </summary>
+    /// <param name="entity">The entity for which we create the movement tiles</param>
+    /// <param name="entities">The entities that participate in the combat</param>
     public void CreateMovementTiles(Entity entity, Entity[] entities) {
         DeleteActionTiles();
         
@@ -57,6 +71,10 @@ public class TerrainManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Create interaction tiles for the player to choose a cell to attack
+    /// </summary>
+    /// <param name="entity">The entity for which we create the attack tiles</param>
     public void CreateAttackTiles(Entity entity) {
         DeleteActionTiles();
         
@@ -80,6 +98,9 @@ public class TerrainManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Delete the interaction tiles
+    /// </summary>
     public void DeleteActionTiles() {
         GameObject highlightedMoves = GameObject.Find("ActionTiles");
         if (Application.isEditor) {
@@ -89,12 +110,22 @@ public class TerrainManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Place an entity on the terrain
+    /// </summary>
+    /// <param name="entity">The entity we want to place on the terrain</param>
     public void PlaceEntity(Entity entity) {
         Position pos = entity.infos.position;
         entity.transform.position = new Vector3(pos.x - terrainCharacteristics.size / 2, terrain.GetHeightMapValue(pos.x, pos.y) + 1.5f, pos.y - terrainCharacteristics.size / 2);
         entity.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
     }
 
+    // TODO : Create a walk path animation
+
+    /// <summary>
+    /// Move (update) an entity already on the terrain
+    /// </summary>
+    /// <param name="entity">The entity we want to move</param>
     public void MoveEntity(Entity entity) {
         Position pos = entity.infos.position;
         entity.transform.position = new Vector3(pos.x - terrainCharacteristics.size / 2, terrain.GetHeightMapValue(pos.x, pos.y) + 1.5f, pos.y - terrainCharacteristics.size / 2);

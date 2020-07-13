@@ -2,11 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// An interaction tile used to dispatch an attack action
+/// </summary>
 public class AttackTile : MonoBehaviour
 {
     Entity trigger;
     Position position;
 
+    /// <summary>
+    /// Initialize the tile with data
+    /// </summary>
+    /// <param name="trigger">The entity that created the tile</param>
+    /// <param name="position">The position of the tile</param>
     public void InitializeTile(Entity trigger, Position position) {
         this.trigger = trigger;
         this.position = position;
@@ -14,8 +22,7 @@ public class AttackTile : MonoBehaviour
 
     void OnMouseOver() {
         if (Input.GetMouseButtonDown(0)) {
-            //print("X:" + tilePosition.x + " / Y:" + tilePosition.y);
-
+            // Creates an action
             Target[] targets = { new Target(position) };
             Action action = new AttackAction(targets, trigger);
         }
@@ -26,7 +33,6 @@ public class AttackTile : MonoBehaviour
     }
 
     void OnMouseExit() {
-        //<Renderer>().material.color = new Color(97, 209, 84);
         GetComponent<Renderer>().material.color = new Color(255, 0, 0);
     }
 }

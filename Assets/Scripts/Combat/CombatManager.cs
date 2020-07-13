@@ -18,7 +18,14 @@ public class CombatManager : MonoBehaviour
 
     void Start()
     {
-        Initialize();
+        terrainManager = GetComponentInChildren<TerrainManager>();
+        terrainManager.GenerateTerrain();
+
+        entitiesManager = GetComponentInChildren<EntitiesManager>();
+        entitiesManager.InitializeEntities(entitiesInfos);
+
+        turns = new List<Turn>();
+        turns.Add(new Turn(entitiesManager.GetActiveEntity()));
     }
 
     void Update() {
@@ -28,21 +35,6 @@ public class CombatManager : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.A)) {
             StartAction(ActionType.ATTACK);
         }
-    }
-
-    /// <summary>
-    /// Creates and initializes the terrain, entities and turns managers
-    /// </summary>
-    public void Initialize()
-    {
-        terrainManager = GetComponentInChildren<TerrainManager>();
-        terrainManager.GenerateTerrain();
-
-        entitiesManager = GetComponentInChildren<EntitiesManager>();
-        entitiesManager.InitializeEntities(entitiesInfos);
-
-        turns = new List<Turn>();
-        turns.Add(new Turn(entitiesManager.GetActiveEntity()));
     }
 
     // TODO : Refactor this method

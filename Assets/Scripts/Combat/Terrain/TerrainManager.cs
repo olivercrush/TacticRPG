@@ -4,8 +4,7 @@ using UnityEngine;
 using System.Linq;
 
 /// <summary>
-/// TerrainManager is a platform for the game to interact with the terrain
-/// Responsibility : Entities placement, terrain interaction
+/// TerrainManager is a tier-2 component in charge of the interactions with the Terrain
 /// </summary>
 public class TerrainManager : MonoBehaviour
 {
@@ -130,6 +129,4 @@ public class TerrainManager : MonoBehaviour
         Position pos = entity.infos.position;
         entity.transform.position = new Vector3(pos.x - terrainCharacteristics.size / 2, terrain.GetHeightMapValue(pos.x, pos.y) + 1.5f, pos.y - terrainCharacteristics.size / 2);
     }
-
-    
 }

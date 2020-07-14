@@ -23,7 +23,7 @@ public class MovementTile : MonoBehaviour
     void OnMouseOver() {
         if (Input.GetMouseButtonDown(0)) {
             // Creates an action
-            Target target = new Target(tilePosition);
+            Target target = new Target(position);
             Action action = new MoveAction(target, trigger);
         }
     }

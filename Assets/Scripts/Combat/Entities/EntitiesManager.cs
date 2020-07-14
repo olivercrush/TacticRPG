@@ -2,20 +2,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// EntitiesManager is a tier-2 component
+/// Responsibility : manages the entities and the active system
+/// </summary>
 public class EntitiesManager : MonoBehaviour
 {
     public GameObject EntityPrefab;
     public Entity[] entities;
     private int activeEntity = 0;
 
+    /// <summary>
+    /// Returns the entity that is at a specified position
+    /// </summary>
+    /// <param name="pos">The position at which the entity is</param>
+    /// <returns>An entity</returns>
     public Entity GetEntityAtPosition(Position pos) {
         return entities.GetEntityByPosition(pos);
     }
 
+    /// <summary>
+    /// Returns all entities
+    /// </summary>
+    /// <returns>An array of entities</returns>
     public Entity[] GetAllEntities() {
         return entities;
     }
 
+    /// <summary>
+    /// Returns the active entity
+    /// </summary>
+    /// <returns>An entity</returns>
     public Entity GetActiveEntity() {
         if (activeEntity >= entities.Length)
             return entities[0];

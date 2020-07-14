@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// CombatManager is the higher component in charge of the combat aspect of the game. It has the responsibility to hold the different other managers and to synchronise them.
+/// CombatManager is the tier 1 component in charge of the combat aspect of the game. It has the responsibility to hold the different other managers and to synchronise them.
 /// </summary>
 public class CombatManager : MonoBehaviour
 {

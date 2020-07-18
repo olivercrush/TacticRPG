@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace GameCore.Terrain
+namespace ShipCore.Terrain
 {
     class Cell
     {

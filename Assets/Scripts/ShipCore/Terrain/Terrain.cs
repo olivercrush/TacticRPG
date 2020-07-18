@@ -1,6 +1,6 @@
 using System;
 
-namespace GameCore.Terrain
+namespace ShipCore.Terrain
 {
     class Terrain {
         private Cell[,] _cells;

@@ -4,6 +4,7 @@ namespace GameCore.Terrain
 {
     class Terrain {
         private Cell[,] _cells;
+        public Cell[,] Cells => _cells;
 
         public Terrain((int w, int h) dimensions) {
             GenerateTerrain(dimensions);

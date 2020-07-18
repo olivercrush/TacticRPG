@@ -1,9 +1,13 @@
 using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace GameCore.Terrain
 {
     class Cell
     {
+        public event EventHandler OnHeightChanged;
+        
         private Guid _id;
         public Guid Id { get => _id; }
         
@@ -20,6 +24,7 @@ namespace GameCore.Terrain
         public void SetCellHeight(int height)
         {
             _position = new Position(_position.X, _position.Y, height);
+            OnHeightChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public int GetCellHeight()

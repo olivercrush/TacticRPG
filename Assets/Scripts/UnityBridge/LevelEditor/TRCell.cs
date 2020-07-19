@@ -21,7 +21,7 @@ public class TRCell : MonoBehaviour
         transform.Find("RightSide").GetComponent<MeshRenderer>().material = sideMaterial;
     }
 
-    // TODO : Create a TerrainCell factory to create particular cells based on materials (from an array of data structure)
+    // TODO : Create a TRCell factory to create particular cells based on materials (from an array of data structure)
     // data { name : OCEAN_WATER, top : ###, right_side : ###, left_side : ### }
 
 }

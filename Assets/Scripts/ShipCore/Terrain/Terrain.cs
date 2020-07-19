@@ -2,7 +2,7 @@ using System;
 
 namespace ShipCore.Terrain
 {
-    class Terrain {
+    public class Terrain {
         private Cell[,] _cells;
         public Cell[,] Cells => _cells;
 

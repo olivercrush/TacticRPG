@@ -11,20 +11,18 @@ public class TerrainRenderer : MonoBehaviour
     public GameObject cellPrefab;
     public Material topMaterial;
     public Material sideMaterial;
+    public Material whiteMaterial;
 
     private Terrain _terrain;
     private GameObject[] _renderedCells;
-    private Guid _selectedCell;
+    private List<Guid> _selectedCells;
 
     private void Start()
     {
         _terrain = new Terrain((width, height));
         InitializeRenderCells(_terrain);
-        
-        _terrain.UpdateCell((3, 3), 3, HeightUpdateMethod.SET);
-        _terrain.UpdateCell((4, 3), -1, HeightUpdateMethod.SET);
-        _terrain.UpdateCell((0, 0), 2, HeightUpdateMethod.SET);
-        _terrain.UpdateCell((1, 3), 1, HeightUpdateMethod.SET);
+
+        _selectedCells = new List<Guid>();
     }
     
     private void Update()
@@ -43,8 +41,31 @@ public class TerrainRenderer : MonoBehaviour
         }
     }
 
-    public void SelectCell(Guid cellId) { _selectedCell = cellId; }
-    public void UpdateSelectedCell(int height, HeightUpdateMethod updateMethod) { _terrain.UpdateCell(_selectedCell, height, updateMethod); }
+    public void CreateCellSelection(Guid cellId)
+    {
+        // TODO#002 : Choose if this the responsibility of TR or TRCell
+        for (int i = 0; i < _selectedCells.Count; i++)
+        {
+            GetCellFromId(_selectedCells[i]).ApplyTextures(topMaterial, sideMaterial);
+        }
+        
+        _selectedCells.Clear();
+        AddCellSelection(cellId);
+    }
+
+    public void AddCellSelection(Guid cellId)
+    {
+        _selectedCells.Add(cellId);
+        GetCellFromId(cellId).ApplyTextures(whiteMaterial, whiteMaterial);
+    }
+
+    public void UpdateSelectedCell(int height, HeightUpdateMethod updateMethod)
+    {
+        for (int i = 0; i < _selectedCells.Count; i++)
+        {
+            _terrain.UpdateCell(_selectedCells[i], height, updateMethod);
+        }
+    }
 
     private void InitializeRenderCells(Terrain terrain)
     {
@@ -69,5 +90,14 @@ public class TerrainRenderer : MonoBehaviour
     {
         Cell c = sender as Cell;
         _renderedCells[c.Position.X + _terrain.Cells.GetLength(0) * c.Position.Y].GetComponent<TRCell>().UpdatePosition();
+    }
+
+    private TRCell GetCellFromId(Guid id)
+    {
+        for (int i = 0; i < _renderedCells.Length; i++)
+        {
+            if (id == _renderedCells[i].GetComponent<TRCell>().GetCellGuid()) { return _renderedCells[i].GetComponent<TRCell>(); }
+        }
+        return null;
     }
 }

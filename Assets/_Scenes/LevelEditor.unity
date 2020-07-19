@@ -248,6 +248,7 @@ MonoBehaviour:
     type: 3}
   topMaterial: {fileID: 2100000, guid: 11eaab4270cc6b448a9d2c6175b1c842, type: 2}
   sideMaterial: {fileID: 2100000, guid: e92de31ffb83bef45b6dea02f4cc99a4, type: 2}
+  whiteMaterial: {fileID: 2100000, guid: f69ac4b247e713743b5a95d70d0a467e, type: 2}
 --- !u!4 &1488387533
 Transform:
   m_ObjectHideFlags: 0

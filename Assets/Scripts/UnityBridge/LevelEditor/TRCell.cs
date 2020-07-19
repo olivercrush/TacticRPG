@@ -7,6 +7,24 @@ using UnityEngine;
 public class TRCell : MonoBehaviour
 {
     private Cell _cell;
+    
+    public void Initialize(Cell cell, Material topMaterial, Material sideMaterial)
+    {
+        _cell = cell;
+        ApplyTextures(topMaterial, sideMaterial);
+    }
+
+    public Guid GetCellGuid()
+    {
+        return _cell.Id;
+    }
+
+    public void ApplyTextures(Material topMaterial, Material sideMaterial)
+    {
+        transform.Find("Top").GetComponent<MeshRenderer>().material = topMaterial;
+        transform.Find("LeftSide").GetComponent<MeshRenderer>().material = sideMaterial;
+        transform.Find("RightSide").GetComponent<MeshRenderer>().material = sideMaterial;
+    }
 
     public void UpdatePosition()
     {
@@ -14,25 +32,21 @@ public class TRCell : MonoBehaviour
         updatedPosition.y = _cell.GetCellHeight();
         transform.position = updatedPosition;
     }
-    
-    public void Initialize(Cell cell, Material topMaterial, Material sideMaterial)
-    {
-        _cell = cell;
-        transform.Find("Top").GetComponent<MeshRenderer>().material = topMaterial;
-        transform.Find("LeftSide").GetComponent<MeshRenderer>().material = sideMaterial;
-        transform.Find("RightSide").GetComponent<MeshRenderer>().material = sideMaterial;
-    }
 
     void OnMouseOver()
     {
         if (Input.GetMouseButtonDown(0))
         {
+            if (Input.GetKey(KeyCode.LeftControl))
+                GameObject.FindObjectOfType<TerrainRenderer>().AddCellSelection(_cell.Id);
+            else
+                GameObject.FindObjectOfType<TerrainRenderer>().CreateCellSelection(_cell.Id);
+            
             Debug.Log("Selected (" + _cell.Position.X + "," + _cell.Position.Y + ")");
-            GameObject.FindObjectOfType<TerrainRenderer>().SelectCell(_cell.Id);
         }
     }
 
-    // TODO : Create a TRCell factory to create particular cells based on materials (from an array of data structure)
+    // TODO#001 : Create a TRCell factory to create particular cells based on materials (from an array of data structure)
     // data { name : OCEAN_WATER, top : ###, right_side : ###, left_side : ### }
 
 }

@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace ShipCore.Terrain
 {
-    class Cell
+    public class Cell
     {
         public event EventHandler OnHeightChanged;
         
@@ -33,7 +33,7 @@ namespace ShipCore.Terrain
         }
     }
 
-    readonly struct Position {
+    public readonly struct Position {
         public int X { get; }
         public int Y { get; }
         public int H { get; }

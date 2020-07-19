@@ -1,17 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using ShipCore.Terrain;
 using UnityEngine;
+public class TRCell : MonoBehaviour
+{
+    private Cell _cell;
 
-/// <summary>
-/// TerrainCell is a script attached to all terrain cells.
-/// Responsibility : The texture attributions to the different parts, the animations (for earthquakes, water, lava..)
-/// </summary>
-public class TerrainCell : MonoBehaviour {
-
-    /// <summary>
-    /// Assign materials for the top, right and left planes
-    /// </summary>
-    public void Initialize(Material topMaterial, Material sideMaterial) {
+    public void UpdatePosition()
+    {
+        Vector3 updatedPosition = transform.position;
+        updatedPosition.y = _cell.GetCellHeight();
+        transform.position = updatedPosition;
+    }
+    
+    public void Initialize(Cell cell, Material topMaterial, Material sideMaterial)
+    {
+        _cell = cell;
         transform.Find("Top").GetComponent<MeshRenderer>().material = topMaterial;
         transform.Find("LeftSide").GetComponent<MeshRenderer>().material = sideMaterial;
         transform.Find("RightSide").GetComponent<MeshRenderer>().material = sideMaterial;

@@ -14,6 +14,7 @@ public class TerrainRenderer : MonoBehaviour
 
     private Terrain _terrain;
     private GameObject[] _renderedCells;
+    private Guid _selectedCell;
 
     private void Start()
     {
@@ -25,6 +26,18 @@ public class TerrainRenderer : MonoBehaviour
         _terrain.UpdateCell((0, 0), 2);
         _terrain.UpdateCell((1, 3), 1);
     }
+    
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            Debug.Log("Q pressed");
+            UpdateSelectedCell(0);
+        }
+    }
+
+    public void SelectCell(Guid cellId) { _selectedCell = cellId; }
+    public void UpdateSelectedCell(int height) { _terrain.UpdateCell(_selectedCell, height); }
 
     private void InitializeRenderCells(Terrain terrain)
     {

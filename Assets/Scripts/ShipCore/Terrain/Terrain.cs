@@ -1,4 +1,6 @@
 using System;
+using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 namespace ShipCore.Terrain
 {
@@ -9,7 +11,7 @@ namespace ShipCore.Terrain
         public Terrain((int w, int h) dimensions) {
             GenerateTerrain(dimensions);
         }
-
+        
         private void GenerateTerrain((int w, int h) dimensions) {
             _cells = new Cell[dimensions.w, dimensions.h];
             for (int y = 0; y < dimensions.h; y++) {

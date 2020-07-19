@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using ShipCore.Terrain;
 using UnityEngine;
+
 public class TRCell : MonoBehaviour
 {
     private Cell _cell;
@@ -19,6 +21,15 @@ public class TRCell : MonoBehaviour
         transform.Find("Top").GetComponent<MeshRenderer>().material = topMaterial;
         transform.Find("LeftSide").GetComponent<MeshRenderer>().material = sideMaterial;
         transform.Find("RightSide").GetComponent<MeshRenderer>().material = sideMaterial;
+    }
+
+    void OnMouseOver()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Debug.Log("Selected (" + _cell.Position.X + "," + _cell.Position.Y + ")");
+            GameObject.FindObjectOfType<TerrainRenderer>().SelectCell(_cell.Id);
+        }
     }
 
     // TODO : Create a TRCell factory to create particular cells based on materials (from an array of data structure)

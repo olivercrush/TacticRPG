@@ -4,6 +4,8 @@ using UnityEngine.PlayerLoop;
 
 namespace ShipCore.Terrain
 {
+    // TODO#002 : Check this stuff for json save https://www.newtonsoft.com/json/help/html/WriteToJsonFile.htm
+    
     public class Terrain {
         private Cell[,] _cells;
         public Cell[,] Cells => _cells;

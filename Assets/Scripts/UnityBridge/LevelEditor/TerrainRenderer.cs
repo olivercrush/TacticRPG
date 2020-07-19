@@ -55,8 +55,17 @@ public class TerrainRenderer : MonoBehaviour
 
     public void AddCellSelection(Guid cellId)
     {
-        _selectedCells.Add(cellId);
-        GetCellFromId(cellId).ApplyTextures(whiteMaterial, whiteMaterial);
+        if (!_selectedCells.Contains(cellId))
+        {
+            _selectedCells.Add(cellId);
+            GetCellFromId(cellId).ApplyTextures(whiteMaterial, whiteMaterial);
+        }
+        else
+        {
+            _selectedCells.Remove(cellId);
+            GetCellFromId(cellId).ApplyTextures(topMaterial, sideMaterial);
+        }
+        
     }
 
     public void UpdateSelectedCell(int height, HeightUpdateMethod updateMethod)

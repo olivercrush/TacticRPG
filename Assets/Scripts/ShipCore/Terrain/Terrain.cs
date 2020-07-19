@@ -21,19 +21,27 @@ namespace ShipCore.Terrain
             }
         }
 
-        public void UpdateCell(Guid id, int height) {
+        public void UpdateCell(Guid id, int height, HeightUpdateMethod updateMethod) {
             for (int y = 0; y < _cells.GetLength(1); y++)
             {
                 for (int x = 0; x < _cells.GetLength(0); x++)
                 {
-                    if (_cells[x,y].Id == id)
-                        _cells[x, y].SetCellHeight(height);
+                    if (_cells[x, y].Id == id)
+                        UpdateCell((x, y), height, updateMethod);
                 }
             }
         }
         
-        public void UpdateCell((int x, int y) coordinates, int height) {
-            _cells[coordinates.x, coordinates.y].SetCellHeight(height);
+        public void UpdateCell((int x, int y) coordinates, int height, HeightUpdateMethod updateMethod) {
+            if (updateMethod == HeightUpdateMethod.SET)
+            {
+                _cells[coordinates.x, coordinates.y].SetCellHeight(height);
+
+            }
+            else if (updateMethod == HeightUpdateMethod.ADD)
+            {
+                _cells[coordinates.x, coordinates.y].SetCellHeight(_cells[coordinates.x, coordinates.y].GetCellHeight() + height);
+            }
         }
 
         public void LogTerrain() {
@@ -45,5 +53,11 @@ namespace ShipCore.Terrain
                 Console.Write("\n");
             }
         }
+    }
+
+    public enum HeightUpdateMethod
+    {
+        SET,
+        ADD
     }
 }

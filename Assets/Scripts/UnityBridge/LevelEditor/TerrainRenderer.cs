@@ -21,23 +21,30 @@ public class TerrainRenderer : MonoBehaviour
         _terrain = new Terrain((width, height));
         InitializeRenderCells(_terrain);
         
-        _terrain.UpdateCell((3, 3), 3);
-        _terrain.UpdateCell((4, 3), -1);
-        _terrain.UpdateCell((0, 0), 2);
-        _terrain.UpdateCell((1, 3), 1);
+        _terrain.UpdateCell((3, 3), 3, HeightUpdateMethod.SET);
+        _terrain.UpdateCell((4, 3), -1, HeightUpdateMethod.SET);
+        _terrain.UpdateCell((0, 0), 2, HeightUpdateMethod.SET);
+        _terrain.UpdateCell((1, 3), 1, HeightUpdateMethod.SET);
     }
     
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            Debug.Log("Q pressed");
-            UpdateSelectedCell(0);
+            UpdateSelectedCell(0, HeightUpdateMethod.SET);
+        }
+        else if (Input.GetKeyDown(KeyCode.W))
+        {
+            UpdateSelectedCell(1, HeightUpdateMethod.ADD);
+        }
+        else if (Input.GetKeyDown(KeyCode.S))
+        {
+            UpdateSelectedCell(-1, HeightUpdateMethod.ADD);
         }
     }
 
     public void SelectCell(Guid cellId) { _selectedCell = cellId; }
-    public void UpdateSelectedCell(int height) { _terrain.UpdateCell(_selectedCell, height); }
+    public void UpdateSelectedCell(int height, HeightUpdateMethod updateMethod) { _terrain.UpdateCell(_selectedCell, height, updateMethod); }
 
     private void InitializeRenderCells(Terrain terrain)
     {
